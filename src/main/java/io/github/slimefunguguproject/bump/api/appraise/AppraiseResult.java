@@ -91,6 +91,7 @@ public final class AppraiseResult {
         ItemMeta meta = itemStack.getItemMeta();
         Material material = itemStack.getType();
         byte stars = getStars();
+        List<String> modifierIds = new ArrayList<>();
 
         // attributes
         for (Map.Entry<AppraiseAttribute, Double> entry : result.entrySet()) {
@@ -100,9 +101,10 @@ public final class AppraiseResult {
                 // Check if the material is applicable for slot
                 BumpTag tag = BumpTag.getTag(slot.name() + "_SLOT");
                 if (tag.isTagged(material)) {
-                    meta.addAttributeModifier(attr,
-                        new AttributeModifier(UUID.randomUUID(), appraiseType.getKey().toString(), entry.getValue(), AppraiseUtils.getOperation(attr), slot)
-                    );
+                    UUID uuid = UUID.randomUUID();
+                    AttributeModifier modifier = new AttributeModifier(uuid, appraiseType.getKey().toString(), entry.getValue(), AppraiseUtils.getOperation(attr), slot);
+                    meta.addAttributeModifier(attr, modifier);
+                    modifierIds.add(uuid.toString());
                 }
             }
         }
@@ -127,6 +129,7 @@ public final class AppraiseResult {
         // pdc
         PersistentDataAPI.setByte(meta, Keys.APPRAISE_LEVEL, stars);
         PersistentDataAPI.setByte(meta, Keys.APPRAISE_VERSION, (byte) 2);
+        PersistentDataAPI.setString(meta, Keys.APPRAISE_MODIFIERS, String.join(",", modifierIds));
 
         itemStack.setItemMeta(meta);
     }
