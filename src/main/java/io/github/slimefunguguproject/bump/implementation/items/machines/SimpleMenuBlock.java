@@ -61,6 +61,11 @@ public abstract class SimpleMenuBlock extends MenuBlock implements EnergyNetComp
     @Nonnull
     protected abstract ItemStack getOperationSlotItem();
 
+    @Nonnull
+    protected ItemStack getOperationSlotItem(@Nonnull Player p) {
+        return getOperationSlotItem();
+    }
+
     @Override
     protected void setup(BlockMenuPreset blockMenuPreset) {
         blockMenuPreset.drawBackground(ChestMenuUtils.getBackground(), BACKGROUND);
@@ -83,6 +88,7 @@ public abstract class SimpleMenuBlock extends MenuBlock implements EnergyNetComp
     @Override
     protected void onNewInstance(BlockMenu blockMenu, Block b) {
         super.onNewInstance(blockMenu, b);
+        blockMenu.addMenuOpeningHandler(player -> blockMenu.replaceExistingItem(OPERATION_SLOT, getOperationSlotItem(player)));
         blockMenu.addMenuClickHandler(OPERATION_SLOT, (player, slot, itemStack, clickAction) -> {
             onOperate(blockMenu, b, player, clickAction);
             return false;

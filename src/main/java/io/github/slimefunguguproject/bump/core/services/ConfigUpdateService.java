@@ -12,7 +12,7 @@ import net.guizhanss.guizhanlib.slimefun.addon.AddonConfig;
  * @author ybw0014
  */
 public final class ConfigUpdateService {
-    private static final int CURRENT_VERSION = 4;
+    private static final int CURRENT_VERSION = 5;
 
     public ConfigUpdateService(@Nonnull AddonConfig config) {
         if (config.getInt("version", 1) < CURRENT_VERSION) {

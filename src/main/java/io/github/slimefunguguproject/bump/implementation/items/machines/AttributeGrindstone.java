@@ -62,6 +62,22 @@ public final class AttributeGrindstone extends SimpleMenuBlock {
     }
 
     @Override
+    @Nonnull
+    protected ItemStack getOperationSlotItem(@Nonnull Player p) {
+        ItemStack itemStack = getOperationSlotItem().clone();
+        if (canFullClear(p)) {
+            ItemMeta meta = itemStack.getItemMeta();
+            List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
+            for (String line : Bump.getLocalization().getStringArray("gui.grind.full-clear-lore")) {
+                lore.add(ChatUtil.color(line));
+            }
+            meta.setLore(lore);
+            itemStack.setItemMeta(meta);
+        }
+        return itemStack;
+    }
+
+    @Override
     public int getCapacity() {
         return ENERGY_CONSUMPTION;
     }
@@ -69,10 +85,10 @@ public final class AttributeGrindstone extends SimpleMenuBlock {
     @ParametersAreNonnullByDefault
     @Override
     protected void onOperate(BlockMenu menu, Block b, Player p, ClickAction action) {
-        grind(menu, p);
+        grind(menu, p, action.isShiftClicked() && canFullClear(p));
     }
 
-    private void grind(@Nonnull BlockMenu blockMenu, @Nonnull Player p) {
+    private void grind(@Nonnull BlockMenu blockMenu, @Nonnull Player p, boolean clearAll) {
         ItemStack item = blockMenu.getItemInSlot(getInputSlot());
 
         // null check
@@ -105,21 +121,27 @@ public final class AttributeGrindstone extends SimpleMenuBlock {
         }
 
         ItemStack output = item.clone();
-        clearAttributes(output);
+        clearAttributes(output, clearAll);
         blockMenu.replaceExistingItem(getInputSlot(), null);
         blockMenu.pushItem(output, getOutputSlot());
 
         setCharge(blockMenu.getLocation(), 0);
-        Bump.getLocalization().sendMessage(p, "machine.attribute-grindstone.success");
+        Bump.getLocalization().sendMessage(p, clearAll
+            ? "machine.attribute-grindstone.success-full-clear"
+            : "machine.attribute-grindstone.success");
         BumpSound.ATTRIBUTE_GRINDSTONE_SUCCEED.playFor(p);
     }
 
-    private void clearAttributes(@Nonnull ItemStack itemStack) {
+    private void clearAttributes(@Nonnull ItemStack itemStack, boolean clearAll) {
         ItemMeta meta = itemStack.getItemMeta();
         // check the appraising version
         byte version = PersistentDataAPI.getByte(meta, Keys.APPRAISE_VERSION, (byte) 1);
 
-        removeModifiers(meta, version);
+        if (clearAll) {
+            removeAllModifiers(meta);
+        } else {
+            removeModifiers(meta, version);
+        }
         restoreDefaultAttributesIfEmpty(meta);
 
         // set pdc
@@ -147,6 +169,13 @@ public final class AttributeGrindstone extends SimpleMenuBlock {
 
         // done
         itemStack.setItemMeta(meta);
+    }
+
+    private boolean canFullClear(@Nonnull Player p) {
+        return Bump.getRegistry().getConfig()
+            .getStringList("attribute-grindstone.full-clear-players")
+            .stream()
+            .anyMatch(name -> name.equalsIgnoreCase(p.getName()));
     }
 
     @ParametersAreNonnullByDefault

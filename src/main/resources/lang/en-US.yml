@@ -318,6 +318,7 @@ messages:
     attribute-grindstone:
       invalid: "&cThis item is not appraised yet."
       success: "&aThe appraisal result is purged!"
+      success-full-clear: "&aAll attributes are purged!"
 console:
   loading-appraise-types: "Loading appraise types from config."
   loading-appraise-type: "Loading appraise type \"{0}\"."
@@ -358,6 +359,8 @@ gui:
     lore:
       - "&7<- Put appraised items on the left side"
       - "&7Click here to purge attributes"
+    full-clear-lore:
+      - "&eShift-click to purge all attributes"
 appraise_info:
   name: "&bAppraise type: &e{0}"
   click: "&eClick to view details"
@@ -383,4 +386,3 @@ appraise_info:
     range: "&7Range: &b{0} &7~ &b{1}"
     weight: "&7Weight: &b{0}%"
 attributes:
-

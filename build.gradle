@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'io.github.slimefunguguproject'
-version = 'UNOFFICIAL'
+version = providers.gradleProperty('version').orElse('UNOFFICIAL').get()
 description = 'Bump'
 
 java {
@@ -67,6 +67,7 @@ jar {
 
 shadowJar {
     archiveClassifier = ''
+    archiveFileName = "${project.name}_${project.version}_GiaUy_${java.time.format.DateTimeFormatter.ofPattern('ddMMyyHHmm').withZone(java.time.ZoneId.of('Asia/Ho_Chi_Minh')).format(java.time.Instant.now())}.jar"
     relocate 'net.guizhanss.guizhanlib', 'io.github.slimefunguguproject.bump.libs.guizhanlib'
     relocate 'dev.sefiraat.sefilib', 'io.github.slimefunguguproject.bump.libs.sefilib'
     relocate 'org.bstats', 'io.github.slimefunguguproject.bump.libs.bstats'

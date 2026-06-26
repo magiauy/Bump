@@ -318,6 +318,7 @@ messages:
     attribute-grindstone:
       invalid: "&c该物品还未鉴定！"
       success: "&a已清除鉴定结果！"
+      success-full-clear: "&a已清除全部属性！"
 console:
   loading-appraise-types: "正在从配置文件中加载所有鉴定类型。"
   loading-appraise-type: "正在加载鉴定类型 \"{0}\"。"
@@ -358,6 +359,8 @@ gui:
     lore:
       - "&7<- 在左侧放入已鉴定的物品"
       - "&7点击这里清除属性"
+    full-clear-lore:
+      - "&eShift点击清除全部属性"
 appraise_info:
   name: "&b鉴定类型: &e{0}"
   click: "&e点击查看详情"
@@ -382,4 +385,3 @@ appraise_info:
     name: "&e属性： &9{0}"
     range: "&7范围： &b{0} &7~ &b{1}"
     weight: "&7权重： &b{0}%"
-
